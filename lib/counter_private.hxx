@@ -22,34 +22,30 @@
  * SOFTWARE.
  */
 
-#include "counter.hxx"
-#include "counter_private.hxx"
-#include <cassert>
+#ifndef __COUNTER_PRIVATE_HXX
+#define __COUNTER_PRIVATE_HXX
 
-using namespace std;
+#include <ctime>
 
-Counter::Counter(int duration) : _p(new CounterPrivate(duration))
+class CounterPrivate
 {
-}
+public:
+    CounterPrivate(int duration) : d(duration)
+    {
 
-Counter::~Counter()
-{
-    delete _p;
-}
+    }
 
-void Counter::hit()
-{
-    hit(std::time(NULL));
-}
+    void hit(std::time_t time)
+    {
 
-void Counter::hit(time_t time)
-{
-    assert(_p);
-    _p->hit(time);
-}
+    }
 
-int Counter::analyze(time_t start, time_t end)
-{
-    assert(_p);
-    return _p->analyze(start, end);
-}
+    int analyze(std::time_t start, std::time_t end)
+    {
+
+    }
+
+    int d;
+};
+
+#endif

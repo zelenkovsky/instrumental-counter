@@ -21,3 +21,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+#ifndef __COUNTER_HXX
+#define __COUNTER_HXX
+
+#include <ctime>
+
+class CounterPrivate;
+
+class Counter
+{
+public:
+    Counter(int duration = 300);
+    virtual ~Counter();
+
+    void hit();
+    void hit(std::time_t time);
+
+    int analyze(std::time_t start, std::time_t end);
+
+private:
+    CounterPrivate *_p;
+};
+
+
+#endif
