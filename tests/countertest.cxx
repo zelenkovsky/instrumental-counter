@@ -23,9 +23,14 @@
  */
 
 #include <iostream>
+#include "../lib/counter.hxx"
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello tests!" << std::endl;
+    Counter counter(20);
+    counter.hit(1);
+    counter.hit(1);
+
+    std::cout << "Analyze: " << counter.analyze(1,1) << std::endl;
     return 0;
 }

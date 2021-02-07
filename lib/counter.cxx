@@ -37,15 +37,15 @@ Counter::~Counter()
     delete _p;
 }
 
-void Counter::hit()
+bool Counter::hit()
 {
-    hit(std::time(NULL));
+    return hit(std::time(NULL));
 }
 
-void Counter::hit(time_t time)
+bool Counter::hit(time_t time)
 {
     assert(_p);
-    _p->hit(time);
+    return _p->hit(time);
 }
 
 int Counter::analyze(time_t start, time_t end)

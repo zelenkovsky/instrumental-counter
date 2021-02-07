@@ -26,26 +26,28 @@
 #define __COUNTER_PRIVATE_HXX
 
 #include <ctime>
+#include <vector>
+#include "counter.hxx"
+
+typedef struct Bucket
+{
+    time_t id;
+    int count;
+} BUCKET, *PBUCKET;
 
 class CounterPrivate
 {
 public:
-    CounterPrivate(int duration) : d(duration)
-    {
+    CounterPrivate(int d);
 
-    }
+    bool hit(std::time_t time);
+    int analyze(std::time_t begin, std::time_t end);
+    int count(std::time_t time);
 
-    void hit(std::time_t time)
-    {
-
-    }
-
-    int analyze(std::time_t start, std::time_t end)
-    {
-
-    }
-
-    int d;
+    int duration;
+    std::vector<BUCKET> buffer;
+    std::vector<BUCKET>::iterator begin;
+    std::vector<BUCKET>::iterator end;
 };
 
 #endif

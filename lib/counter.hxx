@@ -35,8 +35,8 @@ public:
     Counter(int duration = 300);
     virtual ~Counter();
 
-    void hit();
-    void hit(std::time_t time);
+    bool hit();
+    bool hit(std::time_t time);
 
     int analyze(std::time_t start, std::time_t end);
 
