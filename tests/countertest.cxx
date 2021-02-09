@@ -22,15 +22,60 @@
  * SOFTWARE.
  */
 
+#include <cstdlib>
 #include <iostream>
 #include "../lib/counter.hxx"
 
+#define VERIFY( EXPR )     \
+    do {                   \
+        if ( !(EXPR) ) {   \
+            std::cerr << "Expression failed at " << __FILE__ << ":" << __LINE__ << std::endl; \
+            std::exit(1);  \
+        }                  \
+    } while (false);
+
 int main(int argc, char* argv[])
 {
-    Counter counter(20);
-    counter.hit(1);
-    counter.hit(1);
+    {
+        std::cout << "Counting 3 hits per second ... ";
+        Counter counter(10);
+        counter.hit(1);
+        counter.hit(1);
+        counter.hit(1);
 
-    std::cout << "Analyze: " << counter.analyze(1,1) << std::endl;
+        VERIFY(counter.analyze(0,1) == 3);
+        std::cout << "OK" << std::endl;
+    }
+    {
+        std::cout << "Counting 3 hits per 5 seconds ... ";
+        Counter counter(10);
+        counter.hit(1);
+        counter.hit(3);
+        counter.hit(5);
+
+        VERIFY(counter.analyze(0,5) == 3);
+        std::cout << "OK" << std::endl;
+    }
+    {
+        std::cout << "Counting wrong in interval ... ";
+        Counter counter(10);
+        counter.hit(1);
+
+        VERIFY(counter.analyze(5,0) == 0);
+        std::cout << "OK" << std::endl;
+    }
+    {
+        std::cout << "Counting with short buffer ... ";
+        Counter counter(5);
+        counter.hit(1);
+        counter.hit(3);
+        counter.hit(5);
+        counter.hit(7);
+        counter.hit(9);
+        counter.hit(11);
+
+        VERIFY(counter.analyze(2,8) == 3);
+        std::cout << "OK" << std::endl;
+    }
     return 0;
 }

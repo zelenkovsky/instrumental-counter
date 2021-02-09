@@ -31,8 +31,9 @@
 
 typedef struct Bucket
 {
+    Bucket() : id(0), count(0) {}
     time_t id;
-    int count;
+    unsigned long long count;
 } BUCKET, *PBUCKET;
 
 class CounterPrivate
@@ -41,10 +42,11 @@ public:
     CounterPrivate(int d);
 
     bool hit(std::time_t time);
-    int analyze(std::time_t begin, std::time_t end);
-    int count(std::time_t time);
+    unsigned long long analyze(std::time_t begin, std::time_t end);
+    unsigned long long count(std::time_t time);
 
     int duration;
+    unsigned long long counter;
     std::vector<BUCKET> buffer;
     std::vector<BUCKET>::iterator begin;
     std::vector<BUCKET>::iterator end;

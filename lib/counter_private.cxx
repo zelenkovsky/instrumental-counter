@@ -26,10 +26,12 @@
 
 using namespace std;
 
-CounterPrivate::CounterPrivate(int d) : duration(d)
+CounterPrivate::CounterPrivate(int d) : duration(d), counter(0)
 {
     buffer.resize(duration);
     begin = end = buffer.begin();
+    begin->id = 0;
+    begin->count = 0;
 }
 
 bool CounterPrivate::hit(time_t time)
@@ -46,11 +48,12 @@ bool CounterPrivate::hit(time_t time)
                 begin = buffer.begin();
 
         // this is first hit
-        end->count = 1;
+        end->id = time;
+        end->count = ++counter;
 
     } else if (time == latest) {
         // this is subsequent hit for this second
-        end->count += 1;
+        end->count = ++counter;
 
     } else {
         // this is a hit for past
@@ -59,18 +62,17 @@ bool CounterPrivate::hit(time_t time)
     return true;
 }
 
-int CounterPrivate::analyze(time_t b, time_t e)
+unsigned long long CounterPrivate::analyze(time_t b, time_t e)
 {
-    return count(b) - count(e);
+    return count(e) - count(b - 1);
 }
 
-int CounterPrivate::count(std::time_t time)
+unsigned long long CounterPrivate::count(std::time_t time)
 {
     // timestamp is out of bounds
     if (time < begin->id || time > end->id)
         return 0;
 
-    int res = 0;
     std::vector<BUCKET>::iterator b = begin, e = end;
     while (true) {
 

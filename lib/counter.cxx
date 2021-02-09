@@ -48,7 +48,7 @@ bool Counter::hit(time_t time)
     return _p->hit(time);
 }
 
-int Counter::analyze(time_t start, time_t end)
+unsigned long long Counter::analyze(time_t start, time_t end)
 {
     assert(_p);
     return _p->analyze(start, end);

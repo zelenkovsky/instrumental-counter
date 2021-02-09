@@ -38,7 +38,7 @@ public:
     bool hit();
     bool hit(std::time_t time);
 
-    int analyze(std::time_t start, std::time_t end);
+    unsigned long long analyze(std::time_t start, std::time_t end);
 
 private:
     CounterPrivate *_p;
