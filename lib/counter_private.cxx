@@ -23,6 +23,10 @@
  */
 
 #include "counter_private.hxx"
+#include <algorithm>
+#include <cassert>
+#include <iostream>
+#include <iomanip>
 
 using namespace std;
 
@@ -62,20 +66,25 @@ bool CounterPrivate::hit(time_t time)
     return true;
 }
 
-unsigned long long CounterPrivate::analyze(time_t b, time_t e)
+unsigned long long CounterPrivate::analyze(time_t dur)
 {
-    return count(e) - count(b - 1);
+    if (dur <= 0 || duration < dur)
+        return 0;
+
+    return count(end->id) - count(max(end->id - dur, static_cast<time_t>(0)));
 }
 
-unsigned long long CounterPrivate::count(std::time_t time)
+unsigned long long CounterPrivate::count(time_t time)
 {
     // timestamp is out of bounds
     if (time < begin->id || time > end->id)
         return 0;
 
-    std::vector<BUCKET>::iterator b = begin, e = end;
+    vector<BUCKET>::iterator b = begin, e = end;
     while (true) {
-
+#ifndef NDEBUG
+        vis(b,e);
+#endif
         if (e->id == time)
             return e->count;
 
@@ -85,15 +94,52 @@ unsigned long long CounterPrivate::count(std::time_t time)
         if (b == e)
             return b->count;
 
-        int d = e - b;
-        vector<BUCKET>::iterator m = b + d/2;
+        int d = e - b > 0 ? e - b : duration + (e - b);
+        if (d == 1)
+            return b->count;
+
+        /*
+         * Calculating difference between
+         * 'beging' and 'end' markers in order to
+         * find middle element and shift marker
+         * for next iteration.
+         */
+        vector<BUCKET>::iterator m = buffer.end() - b > d/2 ?
+            b + (d + 1)/2 :
+            buffer.begin() + (d/2 - (buffer.end() - b));
+
         if (m->id < time)
-            e = m;
-        else if (m->id > time)
             b = m;
+        else if (m->id > time)
+            e = m;
         else
             return m->count;
     }
     // never can happen
     return 0;
+}
+
+void CounterPrivate::vis(vector<BUCKET>::iterator b, vector<BUCKET>::iterator e)
+{
+    cout << endl;
+    for (vector<BUCKET>::iterator i=buffer.begin(); i!=buffer.end(); ++i)
+    {
+        if (i == b)
+            cout << setw(3) << "b";
+        else if (i == e)
+            cout << setw(3) << "e";
+        else
+            cout << setw(4);
+
+        cout << i - buffer.begin();
+    }
+
+    cout << endl;
+
+    for (vector<BUCKET>::iterator i=buffer.begin(); i!=buffer.end(); ++i)
+    {
+        cout << setw(4) << i->id;
+    }
+
+    cout << endl;
 }

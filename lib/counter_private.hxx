@@ -42,8 +42,14 @@ public:
     CounterPrivate(int d);
 
     bool hit(std::time_t time);
-    unsigned long long analyze(std::time_t begin, std::time_t end);
+    unsigned long long analyze(std::time_t duration);
     unsigned long long count(std::time_t time);
+
+    /**
+     * Visualize internal state
+     */
+    void vis(std::vector<BUCKET>::iterator b,
+             std::vector<BUCKET>::iterator e);
 
     int duration;
     unsigned long long counter;

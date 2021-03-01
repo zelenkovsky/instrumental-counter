@@ -24,7 +24,7 @@
 
 #include <cstdlib>
 #include <iostream>
-#include "../lib/counter.hxx"
+#include "../lib/counter_private.hxx"
 
 #define VERIFY( EXPR )     \
     do {                   \
@@ -37,36 +37,53 @@
 int main(int argc, char* argv[])
 {
     {
-        std::cout << "Counting 3 hits per second ... ";
-        Counter counter(10);
+        std::cout << "Counting 3 hits for last 3 second ... ";
+        CounterPrivate counter(10);
         counter.hit(1);
         counter.hit(1);
         counter.hit(1);
 
-        VERIFY(counter.analyze(0,1) == 3);
+        VERIFY(counter.analyze(3) == 3);
         std::cout << "OK" << std::endl;
     }
     {
-        std::cout << "Counting 3 hits per 5 seconds ... ";
-        Counter counter(10);
+        std::cout << "Counting 3 hits for last 5 seconds ... ";
+        CounterPrivate counter(10);
         counter.hit(1);
         counter.hit(3);
         counter.hit(5);
 
-        VERIFY(counter.analyze(0,5) == 3);
+        VERIFY(counter.analyze(5) == 3);
         std::cout << "OK" << std::endl;
     }
     {
         std::cout << "Counting wrong in interval ... ";
-        Counter counter(10);
+        CounterPrivate counter(10);
         counter.hit(1);
 
-        VERIFY(counter.analyze(5,0) == 0);
+        VERIFY(counter.analyze(-1) == 0);
+        std::cout << "OK" << std::endl;
+    }
+    {
+        std::cout << "Counting sequentially with short buffer ... ";
+        CounterPrivate counter(6);
+        counter.hit(1);
+        counter.hit(2);
+        counter.hit(3);
+        counter.hit(4);
+        counter.hit(5);
+        counter.hit(6);
+        counter.hit(7);
+        counter.hit(8);
+        counter.hit(9);
+        counter.hit(10);
+
+        VERIFY(counter.analyze(3) == 3);
         std::cout << "OK" << std::endl;
     }
     {
         std::cout << "Counting with short buffer ... ";
-        Counter counter(5);
+        CounterPrivate counter(5);
         counter.hit(1);
         counter.hit(3);
         counter.hit(5);
@@ -74,7 +91,24 @@ int main(int argc, char* argv[])
         counter.hit(9);
         counter.hit(11);
 
-        VERIFY(counter.analyze(2,8) == 3);
+        VERIFY(counter.analyze(5) == 3);
+        std::cout << "OK" << std::endl;
+    }
+
+    {
+        std::cout << "Counting with short buffer 2 ... ";
+        CounterPrivate counter(6);
+        counter.hit(1);
+        counter.hit(3);
+        counter.hit(5);
+        counter.hit(7);
+        counter.hit(9);
+        counter.hit(9);
+        counter.hit(9);
+        counter.hit(10);
+        counter.hit(11);
+
+        VERIFY(counter.analyze(4) == 6);
         std::cout << "OK" << std::endl;
     }
     return 0;

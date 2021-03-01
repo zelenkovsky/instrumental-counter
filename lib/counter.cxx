@@ -39,17 +39,12 @@ Counter::~Counter()
 
 bool Counter::hit()
 {
-    return hit(std::time(NULL));
+    assert(_p);
+    return _p->hit(time(NULL));
 }
 
-bool Counter::hit(time_t time)
+unsigned long long Counter::analyze(time_t dur)
 {
     assert(_p);
-    return _p->hit(time);
-}
-
-unsigned long long Counter::analyze(time_t start, time_t end)
-{
-    assert(_p);
-    return _p->analyze(start, end);
+    return _p->analyze(dur);
 }
