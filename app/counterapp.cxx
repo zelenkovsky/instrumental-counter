@@ -23,9 +23,57 @@
  */
 
 #include <iostream>
+#include <iomanip>
+#include <cstdlib>
+#include <signal.h>
+#include "counter.hxx"
+
+using namespace std;
+
+static volatile int running = 1;
+
+void signalHandler(int dummy) {
+    running = 0;
+}
 
 int main(int argc, char* argv[])
 {
-    std::cout << "Hello app!" << std::endl;
+    Counter counter(360);
+    cout << "Hits are counting, press ^C to interrupt..." << endl;
+
+    signal(SIGINT, signalHandler);
+
+    time_t timestamp = time(NULL);
+    while (running) {
+        if (!counter.hit()) {
+            cerr << "Failed to count a hit..." << endl;
+            exit(1);
+        }
+    }
+    cout << endl;
+    int total = time(NULL) - timestamp;
+    cout << "Total running time: " << total << "s" << endl;
+    cout << endl;
+
+    if (total >=1)
+        cout << "Last second hits........:" << setw(14) << counter.analyze(1) << endl;
+    if (total >=2)
+        cout << "Last 2 seconds hits.....:" << setw(14) << counter.analyze(2) << endl;
+    if (total >=5)
+        cout << "Last 5 seconds hits.....:" << setw(14) << counter.analyze(5) << endl;
+    if (total >=10)
+        cout << "Last 10 seconds hits....:" << setw(14) << counter.analyze(10) << endl;
+    if (total >=130)
+        cout << "Last 30 seconds hits....:" << setw(14) << counter.analyze(30) << endl;
+    if (total >=60)
+        cout << "Last minute hits........:" << setw(14) << counter.analyze(60) << endl;
+    if (total >=120)
+        cout << "Last two minutes hits...:" << setw(14) << counter.analyze(120) << endl;
+    if (total >=180)
+        cout << "Last tree minutes hits..:" << setw(14) << counter.analyze(180) << endl;
+    if (total >=360)
+        cout << "Last five minutes hits..:" << setw(14) << counter.analyze(360) << endl;
+
+    cout << endl;
     return 0;
 }

@@ -38,9 +38,22 @@ $ make
 Execute unit test cases by entering following command:
 
 ```sh
-$ ./tests/countertes
+$ ./tests/countertest
 ```
 
+Start counter application by running following command:
+```sh
+$ ./app/counterapp
+Hits are counting, press ^C to interrupt...
+^C
+Total running time: 25s
+
+Last second hits........:     147472814
+Last 2 seconds hits.....:     328049714
+Last 5 seconds hits.....:     869628353
+Last 10 seconds hits....:    1771771453
+
+```
 ## BUGS
 
 In case of bugs or questions, please submit **GitHub** issue.

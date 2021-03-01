@@ -57,6 +57,22 @@ int main(int argc, char* argv[])
         std::cout << "OK" << std::endl;
     }
     {
+        std::cout << "Counting 9 hits for last 5 seconds ... ";
+        CounterPrivate counter(10);
+        counter.hit(1);
+        counter.hit(1);
+        counter.hit(1);
+        counter.hit(2);
+        counter.hit(2);
+        counter.hit(2);
+        counter.hit(3);
+        counter.hit(3);
+        counter.hit(3);
+
+        VERIFY(counter.analyze(5) == 9);
+        std::cout << "OK" << std::endl;
+    }
+    {
         std::cout << "Counting wrong in interval ... ";
         CounterPrivate counter(10);
         counter.hit(1);
