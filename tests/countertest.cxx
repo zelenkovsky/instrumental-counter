@@ -107,8 +107,7 @@ int main(int argc, char* argv[])
         counter.hit(9);
         counter.hit(10);
         counter.hit(11);
-
-        VERIFY(counter.analyze(4) == 6);
+        VERIFY(counter.analyze(4) == 5);
         std::cout << "OK" << std::endl;
     }
     return 0;

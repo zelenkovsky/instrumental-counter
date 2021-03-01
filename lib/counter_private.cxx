@@ -103,7 +103,14 @@ unsigned long long CounterPrivate::count(time_t time)
          * 'beging' and 'end' markers in order to
          * find middle element and shift marker
          * for next iteration.
+         *
+         * Code is explicetely written to debug
          */
+        // int dist = buffer.end() - b;
+        // bool extend = dist > d/2;
+        // vector<BUCKET>::iterator l1 = b + (d + 1)/2;
+        // vector<BUCKET>::iterator l2 = buffer.begin() + (d/2 - (buffer.end() - b));
+        // vector<BUCKET>::iterator m = extend ? l1 : l2;
         vector<BUCKET>::iterator m = buffer.end() - b > d/2 ?
             b + (d + 1)/2 :
             buffer.begin() + (d/2 - (buffer.end() - b));
@@ -139,6 +146,13 @@ void CounterPrivate::vis(vector<BUCKET>::iterator b, vector<BUCKET>::iterator e)
     for (vector<BUCKET>::iterator i=buffer.begin(); i!=buffer.end(); ++i)
     {
         cout << setw(4) << i->id;
+    }
+
+    cout << endl;
+
+    for (vector<BUCKET>::iterator i=buffer.begin(); i!=buffer.end(); ++i)
+    {
+        cout << setw(4) << i->count;
     }
 
     cout << endl;
