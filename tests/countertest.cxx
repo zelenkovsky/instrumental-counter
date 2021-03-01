@@ -22,8 +22,9 @@
  * SOFTWARE.
  */
 
-#include <cstdlib>
+#include <string>
 #include <iostream>
+#include <cstdlib>
 #include "../lib/counter_private.hxx"
 
 #define VERIFY( EXPR )     \
@@ -34,8 +35,14 @@
         }                  \
     } while (false);
 
+#define TEST_CASE_START(X) \
+    if (argc == 1 || (argc == 2 && std::string(X) == std::string(argv[1]))) {
+
+#define TEST_CASE_END }
+
 int main(int argc, char* argv[])
 {
+    TEST_CASE_START("1")
     {
         std::cout << "Counting 3 hits for last 3 second ... ";
         CounterPrivate counter(10);
@@ -46,6 +53,9 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(3) == 3);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
+
+    TEST_CASE_START("2")
     {
         std::cout << "Counting 3 hits for last 5 seconds ... ";
         CounterPrivate counter(10);
@@ -56,6 +66,9 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(5) == 3);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
+
+    TEST_CASE_START("3")
     {
         std::cout << "Counting 9 hits for last 5 seconds ... ";
         CounterPrivate counter(10);
@@ -72,6 +85,9 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(5) == 9);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
+
+    TEST_CASE_START("4")
     {
         std::cout << "Counting wrong in interval ... ";
         CounterPrivate counter(10);
@@ -80,6 +96,9 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(-1) == 0);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
+
+    TEST_CASE_START("5")
     {
         std::cout << "Counting sequentially with short buffer ... ";
         CounterPrivate counter(6);
@@ -97,6 +116,9 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(3) == 3);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
+
+    TEST_CASE_START("6")
     {
         std::cout << "Counting with short buffer ... ";
         CounterPrivate counter(5);
@@ -110,7 +132,9 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(5) == 3);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
 
+    TEST_CASE_START("7")
     {
         std::cout << "Counting with short buffer 2 ... ";
         CounterPrivate counter(6);
@@ -126,5 +150,7 @@ int main(int argc, char* argv[])
         VERIFY(counter.analyze(4) == 5);
         std::cout << "OK" << std::endl;
     }
+    TEST_CASE_END
+
     return 0;
 }
